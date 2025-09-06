@@ -43,26 +43,25 @@ export const TokenSignalCard: React.FC<TokenSignalCardProps> = ({
       <div className="absolute -inset-0.5 bg-gradient-to-r from-[#22c55e] to-[#8b5cf6] opacity-0 group-hover:opacity-100 rounded-xl blur transition-all duration-300"></div>
 
       {/* Card Content */}
-      <div className="relative bg-[#121218]/80 backdrop-blur-md rounded-xl p-6 border border-[#2a2a32] transition-all duration-300 hover:transform hover:-translate-y-2">
-        {/* Token Info */}
+      <div className="relative bg-[#121218]/90 backdrop-blur-md rounded-xl p-5 border border-[#2a2a32] transition-all duration-300 hover:transform hover:-translate-y-1">
+        {/* Token Info Row */}
         <div className="flex justify-between items-start mb-4">
           <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#22c55e]/10 to-[#8b5cf6]/10 flex items-center justify-center border border-[#2a2a32] font-bold text-white">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#22c55e]/10 to-[#8b5cf6]/10 flex items-center justify-center border border-[#2a2a32] font-bold">
               {token.symbol.substring(0, 2)}
             </div>
             <div>
-              <h3 className="text-lg font-bold text-white">{token.symbol}</h3>
-              <span className="text-sm text-[#a0a0a0]">{token.type || 'Token'}</span>
+              <h3 className="text-base font-bold text-white">{token.symbol}</h3>
+              <span className="text-sm text-[#a0a0a0]">major coin</span>
             </div>
           </div>
           
-          {/* Watchlist Button */}
           <button
             onClick={(e) => {
               e.stopPropagation();
               onWatchlistToggle(token.symbol);
             }}
-            className={`text-2xl transition-all ${
+            className={`text-xl transition-all ${
               isInWatchlist 
                 ? 'text-[#eab308] animate-pulse' 
                 : 'text-[#6b7280] hover:text-[#eab308]'
@@ -73,30 +72,21 @@ export const TokenSignalCard: React.FC<TokenSignalCardProps> = ({
         </div>
 
         {/* Momentum Signal */}
-        <div className="text-center my-6">
-          <div className={`text-4xl font-bold mb-2 ${getMomentumStyle(token.hx_mom6)}`}>
+        <div className="text-center my-5">
+          <div className={`text-3xl font-bold mb-1 ${getMomentumStyle(token.hx_mom6)}`}>
             {isNumber(token.hx_mom6) && token.hx_mom6 > 0 ? '+' : ''}
             {isNumber(token.hx_mom6) ? token.hx_mom6.toFixed(2) : '--'}%
           </div>
-          <div className="text-[#a0a0a0] text-sm">6H MOMENTUM</div>
+          <div className="text-[#a0a0a0] text-sm font-medium">6H MOMENTUM</div>
         </div>
 
         {/* Sub-signals */}
         <div className="grid grid-cols-3 gap-4 mt-4">
           {[
-            {
-              label: 'BUZZ',
-              value: token.hx_buzz6
-            },
-            {
-            label: 'LIQUIDITY',
-            value: token.hx_liq6
-          },
-          {
-            label: 'RANK',
-            value: token.hx_rankimp6
-          }
-        ].map(metric => (
+            { label: 'BUZZ', value: token.hx_buzz6 },
+            { label: 'LIQUIDITY', value: token.hx_liq6 },
+            { label: 'RANK', value: token.hx_rankimp6 }
+          ].map(metric => (
             <div key={metric.label} className="text-center p-3 rounded-lg bg-[#0a0a0f]/50 border border-[#2a2a32]/50">
               <div className={`text-lg font-bold ${getSignalColor(metric.value)}`}>
                 {isNumber(metric.value) ? 
@@ -104,20 +94,11 @@ export const TokenSignalCard: React.FC<TokenSignalCardProps> = ({
                   '--'
                 }
               </div>
-              <div className="text-[#a0a0a0] text-xs mt-1">
+              <div className="text-[#a0a0a0] text-xs mt-1 font-medium">
                 {metric.label}
               </div>
             </div>
           ))}
-        </div>
-
-        {/* Footer */}
-        <div className="mt-4 pt-4 border-t border-[#2a2a32]/50 flex justify-between items-center text-xs text-[#a0a0a0]">
-          <span>Contributors: {token.contributors_active?.toLocaleString() || '--'}</span>
-          <div className="flex items-center gap-1">
-            <div className="w-2 h-2 bg-[#22c55e] rounded-full animate-pulse"></div>
-            <span>LIVE</span>
-          </div>
         </div>
       </div>
     </div>
