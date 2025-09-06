@@ -241,143 +241,56 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-cyan-900 text-white">
-      {/* Header */}
-      <div className="bg-slate-950/90 border-b border-slate-800 p-4">
-        <div className="max-w-4xl mx-auto">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">📊</span>
-              </div>
-              <h1 className="text-2xl font-bold text-white">Top Signals Browser</h1>
-            </div>
-            
-            {!isConnected ? (
-              <button
-                className="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 text-white font-semibold rounded-lg transition-colors"
-                disabled={isConnecting}
-                onClick={connectWallet}
-              >
-                {isConnecting ? 'Connecting...' : 'Connect Wallet'}
-              </button>
-            ) : (
-              <div className="flex items-center gap-3">
-                <span className="text-sm text-slate-400">
-                  Counter: {counterValue} • Next: {nextMilestone}
-                </span>
-                <button
-                  onClick={handleShare}
-                  className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg transition-colors"
-                >
-                  Share
-                </button>
-              </div>
-            )}
+    <div className="min-h-screen bg-dark-background text-dark-primary bg-aurora">
+      {/* Futuristic Header */}
+      <header className="w-full py-6 px-4 bg-dark-background/80 backdrop-blur-md border-b border-dark-border">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <img src="/arbitrum.png" alt="Logo" className="h-10 w-10" />
+            <h1 className="text-2xl font-bold bg-gradient-to-r from-accent-cyan via-accent-purple to-accent-green bg-clip-text text-transparent">
+              Top Signals Browser
+            </h1>
           </div>
+          <button 
+            onClick={connectWallet}
+            className="px-4 py-2 rounded-lg bg-dark-surface border border-dark-border hover:border-accent-cyan transition-all duration-300 hover:bg-dark-surface/80 hover:shadow-[0_0_20px_rgba(0,194,255,0.3)]"
+          >
+            {isConnected ? 'Connected' : 'Connect Wallet'}
+          </button>
         </div>
-      </div>
+      </header>
 
-      <div className="max-w-4xl mx-auto p-4">
+      <main className="max-w-7xl mx-auto p-6">
         {/* Navigation Tabs */}
-        <div className="flex gap-2 mb-6">
-          <button
-            onClick={() => setCurrentView('list')}
-            className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
-              currentView === 'list' 
-                ? 'bg-cyan-600 text-white' 
-                : 'bg-slate-800/50 text-slate-300 hover:bg-slate-700/50'
-            }`}
-          >
-            Signals
-          </button>
-          <button
-            onClick={() => setCurrentView('watchlist')}
-            className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
-              currentView === 'watchlist' 
-                ? 'bg-cyan-600 text-white' 
-                : 'bg-slate-800/50 text-slate-300 hover:bg-slate-700/50'
-            }`}
-          >
-            Watchlist
-          </button>
-        </div>
-
-        {/* Direction Tabs (only for signals view) */}
-        {currentView === 'list' && (
-          <div className="flex gap-2 mb-6">
+        <nav className="flex space-x-4 mb-8">
+          {['list', 'watchlist', 'detail'].map((view) => (
             <button
-              onClick={() => setSignalsDirection('gainers')}
-              className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
-                signalsDirection === 'gainers' 
-                  ? 'bg-green-600 text-white' 
-                  : 'bg-slate-800/50 text-slate-300 hover:bg-slate-700/50'
+              key={view}
+              onClick={() => setCurrentView(view as View)}
+              className={`px-4 py-2 rounded-lg transition-all duration-300 ${
+                currentView === view 
+                  ? 'bg-dark-surface border-accent-cyan text-accent-cyan border'
+                  : 'text-dark-secondary hover:bg-dark-surface/50'
               }`}
             >
-              ↑ Top Gainers
+              {view.charAt(0).toUpperCase() + view.slice(1)}
             </button>
-            <button
-              onClick={() => setSignalsDirection('losers')}
-              className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
-                signalsDirection === 'losers' 
-                  ? 'bg-red-600 text-white' 
-                  : 'bg-slate-800/50 text-slate-300 hover:bg-slate-700/50'
-              }`}
-            >
-              ↓ Top Losers
-            </button>
-          </div>
-        )}
+          ))}
+        </nav>
 
-        {/* Milestone NFT Section */}
-        {isConnected && (
-          <div className="mb-6">
-            <ResearcherNFT
-              counterValue={counterValue}
-              nextMilestone={nextMilestone}
-              isAtMilestone={isAtMilestone}
-              hasNFT={hasNFT}
-              onMintNFT={handleMintNFT}
-              isLoading={isPending || isConfirming}
+        {/* Token Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {tokens.map(token => (
+            <TokenSignalCard
+              key={token.symbol}
+              token={token}
+              onTokenClick={handleTokenClick}
+              isInWatchlist={signalsAPI.isInWatchlist(token.symbol)}
+              onWatchlistToggle={handleWatchlistToggle}
             />
-          </div>
-        )}
-
-        {/* Tokens Grid */}
-        {loading ? (
-          <div className="text-center py-12">
-            <div className="text-cyan-300 text-lg">Loading signals...</div>
-          </div>
-        ) : tokens.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {tokens.map((token) => (
-              <TokenSignalCard
-                key={token.symbol}
-                token={token}
-                onTokenClick={handleTokenClick}
-                isInWatchlist={signalsAPI.isInWatchlist(token.symbol)}
-                onWatchlistToggle={handleWatchlistToggle}
-              />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12">
-            <div className="text-slate-400 text-lg">
-              {currentView === 'watchlist' 
-                ? 'Your watchlist is empty. Add tokens from the signals list!' 
-                : 'No signals available at the moment.'
-              }
-            </div>
-          </div>
-        )}
-
-        {error && (
-          <div className="mt-4 p-4 bg-red-500/20 border border-red-500/30 rounded-lg">
-            <div className="text-red-400 font-semibold">Error</div>
-            <div className="text-red-300 text-sm">{error.message}</div>
-          </div>
-        )}
-      </div>
+          ))}
+        </div>
+      </main>
     </div>
   );
 }
