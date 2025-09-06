@@ -25,7 +25,7 @@
 // };
 
 
-import React, { useRef, useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import './PlexusBackground.css';
 
 export const PlexusBackground: React.FC = () => {
@@ -38,95 +38,69 @@ export const PlexusBackground: React.FC = () => {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    let animationFrameId: number;
-
-    const resizeCanvas = () => {
+    // Set canvas size
+    const setCanvasSize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
     };
+    setCanvasSize();
+    window.addEventListener('resize', setCanvasSize);
 
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+    // Balanced particle settings
+    const PARTICLE_COUNT = 60;      // Moderate number of particles
+    const CONNECTION_DIST = 175;    // Balanced connection distance
+    const PARTICLE_SIZE = 2;        // Moderate particle size
+    const MOVEMENT_SPEED = 0.4;     // Balanced movement speed
 
-    // --- Animation Logic ---
-    const particles: Particle[] = [];
-    const particleCount = Math.floor((canvas.width * canvas.height) / 20000);
-
-    class Particle {
-      x: number;
-      y: number;
-      vx: number;
-      vy: number;
-      radius: number;
-
-      constructor() {
-        this.x = Math.random() * canvas!.width;
-        this.y = Math.random() * canvas!.height;
-        this.vx = Math.random() * 1 - 0.5;
-        this.vy = Math.random() * 1 - 0.5;
-        this.radius = Math.random() * 1.5 + 1;
-      }
-
-      update() {
-        this.x += this.vx;
-        this.y += this.vy;
-
-        if (this.x < 0 || this.x > canvas!.width) this.vx *= -1;
-        if (this.y < 0 || this.y > canvas!.height) this.vy *= -1;
-      }
-
-      draw() {
-        ctx!.beginPath();
-        ctx!.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx!.fillStyle = '#a0a0a0'; // Color of the nodes
-        ctx!.fill();
-      }
-    }
-
-    const init = () => {
-      for (let i = 0; i < particleCount; i++) {
-        particles.push(new Particle());
-      }
-    };
-
-    const connect = () => {
-      for (let a = 0; a < particles.length; a++) {
-        for (let b = a; b < particles.length; b++) {
-          const dx = particles[a].x - particles[b].x;
-          const dy = particles[a].y - particles[b].y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-
-          if (distance < 120) {
-            const opacity = 1 - distance / 120;
-            ctx!.strokeStyle = `rgba(0, 194, 255, ${opacity})`; // Color of the lines
-            ctx!.lineWidth = 0.5;
-            ctx!.beginPath();
-            ctx!.moveTo(particles[a].x, particles[a].y);
-            ctx!.lineTo(particles[b].x, particles[b].y);
-            ctx!.stroke();
-          }
-        }
-      }
-    };
+    // Create particles
+    const particles = Array.from({ length: PARTICLE_COUNT }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * MOVEMENT_SPEED,
+      vy: (Math.random() - 0.5) * MOVEMENT_SPEED
+    }));
 
     const animate = () => {
-      ctx!.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach(p => {
-        p.update();
-        p.draw();
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      particles.forEach(particle => {
+        // Update position
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+
+        // Bounce off edges
+        if (particle.x < 0 || particle.x > canvas.width) particle.vx *= -1;
+        if (particle.y < 0 || particle.y > canvas.height) particle.vy *= -1;
+
+        // Draw particle
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, PARTICLE_SIZE, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(0, 194, 255, 0.5)';
+        ctx.fill();
+
+        // Draw connections
+        particles.forEach(p2 => {
+          const dx = particle.x - p2.x;
+          const dy = particle.y - p2.y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < CONNECTION_DIST) {
+            ctx.beginPath();
+            ctx.moveTo(particle.x, particle.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.strokeStyle = `rgba(0, 194, 255, ${0.25 * (1 - distance/CONNECTION_DIST)})`;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        });
       });
-      connect();
-      animationFrameId = requestAnimationFrame(animate);
+
+      requestAnimationFrame(animate);
     };
 
-    init();
     animate();
 
-    // Cleanup function
-    return () => {
-      window.removeEventListener('resize', resizeCanvas);
-      cancelAnimationFrame(animationFrameId);
-    };
+    return () => window.removeEventListener('resize', setCanvasSize);
   }, []);
 
   return <canvas ref={canvasRef} className="plexus-background" />;
