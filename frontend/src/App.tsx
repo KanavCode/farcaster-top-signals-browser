@@ -6,6 +6,7 @@ import React, { useEffect, useState } from "react";
 import { sdk } from "@farcaster/miniapp-sdk";
 import { ethers } from "ethers";
 import TopSignalsBrowserAbi from "./abi/TopSignalsBrowser.json";
+import { PlexusBackground } from "./components/PlexusBackground";
 
 // Address of the deployed Top Signals Browser contract
 // Update this after deploying your own contract
@@ -242,6 +243,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-dark-background text-dark-primary bg-aurora">
+      <PlexusBackground />
       {/* Futuristic Header */}
       <header className="w-full py-6 px-4 bg-dark-background/80 backdrop-blur-md border-b border-dark-border">
         <div className="max-w-7xl mx-auto flex items-center justify-between">

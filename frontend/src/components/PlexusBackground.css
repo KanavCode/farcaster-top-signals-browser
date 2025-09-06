@@ -1,0 +1,21 @@
+/* .plexus-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  overflow: hidden;
+} */
+
+
+
+.plexus-background {
+  position: fixed; /* Use fixed to ensure it covers the whole viewport */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background-color: #0a0a0f; /* Match your theme's background */
+}
