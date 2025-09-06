@@ -7,46 +7,47 @@ import { sdk } from "@farcaster/miniapp-sdk";
 import { ethers } from "ethers";
 import TopSignalsBrowserAbi from "./abi/TopSignalsBrowser.json";
 import { PlexusBackground } from "./components/PlexusBackground";
-
-// Address of the deployed Top Signals Browser contract
-// Update this after deploying your own contract
-const CONTRACT_ADDRESS = "0xfb8e062817cdbed024c00ec2e351060a1f6c4ae2"; // TODO: Update with deployed address
-
+import { Header } from './components/Header';
 import { signalsAPI, TokenSignal, TokenDetail } from "./services/signalsAPI";
 import { TokenSignalCard } from "./components/TokenSignalCard";
 import { TokenDetailView } from "./components/TokenDetailView";
 import { ResearcherNFT } from "./components/ResearcherNFT";
 
-type View = 'list' | 'detail' | 'watchlist';
+const CONTRACT_ADDRESS = "0xfb8e062817cdbed024c00ec2e351060a1f6c4ae2";
 
 export default function App() {
-  // Ethers setup
-  const RPC_URL = (import.meta as any).env.VITE_RPC_URL || 'https://sepolia-rollup.arbitrum.io/rpc';
-  const publicProvider = new ethers.JsonRpcProvider(RPC_URL);
-  const publicContract = new ethers.Contract(CONTRACT_ADDRESS, TopSignalsBrowserAbi, publicProvider);
-
-  // App state for connection and contract interactions
+  // Connection states
   const [isConnected, setIsConnected] = useState(false);
   const [address, setAddress] = useState<string | null>(null);
   const [signer, setSigner] = useState<ethers.JsonRpcSigner | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+
+  // Transaction states
   const [txHash, setTxHash] = useState<string | null>(null);
   const [isPending, setIsPending] = useState(false);
   const [isConfirming, setIsConfirming] = useState(false);
   const [isMinted, setIsMinted] = useState(false);
 
-  // App state
-  const [currentView, setCurrentView] = useState<View>('list');
+  // App states
+  const [currentView, setCurrentView] = useState<'list' | 'watchlist' | 'detail'>('list');
   const [signalsDirection, setSignalsDirection] = useState<'gainers' | 'losers'>('gainers');
   const [tokens, setTokens] = useState<TokenSignal[]>([]);
   const [selectedToken, setSelectedToken] = useState<TokenDetail | null>(null);
   const [loading, setLoading] = useState(false);
+
+  // Contract states
   const [counterValue, setCounterValue] = useState(0);
   const [nextMilestone, setNextMilestone] = useState(10);
   const [isAtMilestone, setIsAtMilestone] = useState(false);
   const [hasNFT, setHasNFT] = useState(false);
 
+  // Provider setup
+  const RPC_URL = (import.meta as any).env.VITE_RPC_URL || 'https://sepolia-rollup.arbitrum.io/rpc';
+  const publicProvider = new ethers.JsonRpcProvider(RPC_URL);
+  const publicContract = new ethers.Contract(CONTRACT_ADDRESS, TopSignalsBrowserAbi, publicProvider);
+
+  // Initialize SDK
   useEffect(() => {
     sdk.actions.ready();
   }, []);
@@ -242,57 +243,84 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-dark-background text-dark-primary bg-aurora">
+    <div className="relative min-h-screen bg-black overflow-hidden">
       <PlexusBackground />
-      {/* Futuristic Header */}
-      <header className="w-full py-6 px-4 bg-dark-background/80 backdrop-blur-md border-b border-dark-border">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <img src="/arbitrum.png" alt="Logo" className="h-10 w-10" />
-            <h1 className="text-2xl font-bold bg-gradient-to-r from-accent-cyan via-accent-purple to-accent-green bg-clip-text text-transparent">
-              Top Signals Browser
-            </h1>
-          </div>
-          <button 
-            onClick={connectWallet}
-            className="px-4 py-2 rounded-lg bg-dark-surface border border-dark-border hover:border-accent-cyan transition-all duration-300 hover:bg-dark-surface/80 hover:shadow-[0_0_20px_rgba(0,194,255,0.3)]"
-          >
-            {isConnected ? 'Connected' : 'Connect Wallet'}
-          </button>
-        </div>
-      </header>
-
-      <main className="max-w-7xl mx-auto p-6">
-        {/* Navigation Tabs */}
-        <nav className="flex space-x-4 mb-8">
-          {['list', 'watchlist', 'detail'].map((view) => (
+      <div className="relative z-10">
+        <Header isConnected={isConnected} onConnect={connectWallet} />
+        
+        {/* Added max-w-7xl and wider padding */}
+        <div className="max-w-7xl mx-auto px-8 sm:px-12 py-6">
+          {/* Navigation */}
+          <div className="flex space-x-4 mb-6">
             <button
-              key={view}
-              onClick={() => setCurrentView(view as View)}
+              onClick={() => setCurrentView('list')}
               className={`px-4 py-2 rounded-lg transition-all duration-300 ${
-                currentView === view 
-                  ? 'bg-dark-surface border-accent-cyan text-accent-cyan border'
-                  : 'text-dark-secondary hover:bg-dark-surface/50'
+                currentView === 'list' 
+                ? 'bg-[#00c2ff]/20 text-[#00c2ff] border border-[#00c2ff]/50' 
+                : 'text-gray-400 hover:bg-[#00c2ff]/10 hover:text-[#00c2ff]'
               }`}
             >
-              {view.charAt(0).toUpperCase() + view.slice(1)}
+              Signals
             </button>
-          ))}
-        </nav>
+            <button
+              onClick={() => setCurrentView('watchlist')}
+              className={`px-4 py-2 rounded-lg transition-all duration-300 ${
+                currentView === 'watchlist'
+                ? 'bg-[#00c2ff]/20 text-[#00c2ff] border border-[#00c2ff]/50'
+                : 'text-gray-400 hover:bg-[#00c2ff]/10 hover:text-[#00c2ff]'
+              }`}
+            >
+              Watchlist
+            </button>
+          </div>
 
-        {/* Token Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {tokens.map(token => (
-            <TokenSignalCard
-              key={token.symbol}
-              token={token}
-              onTokenClick={handleTokenClick}
-              isInWatchlist={signalsAPI.isInWatchlist(token.symbol)}
-              onWatchlistToggle={handleWatchlistToggle}
-            />
-          ))}
+          {/* Gainers/Losers Toggle */}
+          {currentView === 'list' && (
+            <div className="flex space-x-2 mb-6">
+              <button
+                onClick={() => setSignalsDirection('gainers')}
+                className={`px-3 py-1 text-sm rounded-lg transition-all duration-300 ${
+                  signalsDirection === 'gainers'
+                  ? 'bg-[#22c55e]/20 text-[#22c55e] border border-[#22c55e]/50'
+                  : 'text-gray-400 hover:bg-[#22c55e]/10 hover:text-[#22c55e]'
+                }`}
+              >
+                ↑ Top Gainers
+              </button>
+              <button
+                onClick={() => setSignalsDirection('losers')}
+                className={`px-3 py-1 text-sm rounded-lg transition-all duration-300 ${
+                  signalsDirection === 'losers'
+                  ? 'bg-[#ef4444]/20 text-[#ef4444] border border-[#ef4444]/50'
+                  : 'text-gray-400 hover:bg-[#ef4444]/10 hover:text-[#ef4444]'
+                }`}
+              >
+                ↓ Top Losers
+              </button>
+            </div>
+          )}
+
+          {/* Token Grid - adjusted gap */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {tokens.map(token => (
+              <TokenSignalCard
+                key={token.symbol}
+                token={token}
+                onTokenClick={handleTokenClick}
+                isInWatchlist={signalsAPI.isInWatchlist(token.symbol)}
+                onWatchlistToggle={handleWatchlistToggle}
+              />
+            ))}
+          </div>
+
+          {/* Loading State */}
+          {loading && (
+            <div className="flex justify-center items-center py-12">
+              <div className="animate-pulse text-[#00c2ff]">Loading signals...</div>
+            </div>
+          )}
         </div>
-      </main>
+      </div>
     </div>
   );
 }

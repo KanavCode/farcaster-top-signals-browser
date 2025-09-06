@@ -21,3 +21,12 @@
     color: #181818;
   }
 }
+
+@keyframes glow {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+.header-glow {
+  animation: glow 2s ease-in-out infinite;
+}
