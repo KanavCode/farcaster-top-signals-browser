@@ -140,7 +140,7 @@ export const TokenDetailView: React.FC<TokenDetailViewProps> = ({
 
         {/* Enhanced Main Signal with Pulse Effect */}
         <div className="relative group bg-[#121218]/90 backdrop-blur-md rounded-xl p-8 mb-6 border border-[#2a2a32] animate-fade-in-up delay-100">
-          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#22c55e] to-[#00c2ff] rounded-xl opacity-0 group-hover:opacity-60 blur transition-opacity duration-300" />
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#22c55e] to-[#00c2ff] rounded-xl opacity-0 group-hover:opacity-70 blur transition-opacity duration-300" />
           <div className="relative bg-[#121218] rounded-xl p-8">
             <div className="text-center">
               <div className={`text-6xl font-bold mb-3 ${getSignalColor(token.hx_mom6)} transform group-hover:scale-105 transition-transform duration-300`}>
