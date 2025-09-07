@@ -248,6 +248,27 @@ export default function App() {
       <div className="relative z-10">
         <Header isConnected={isConnected} onConnect={connectWallet} />
         
+        
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+            </div>
+            
+             
+              
+                <span style={{ color: '#00c2ff', fontSize: '20px', marginLeft: '90px' }}>
+                  Counter: {counterValue} • Next: {nextMilestone}
+                </span>
+                <button
+                  onClick={handleShare}
+                  style={{ backgroundColor:'#000000', borderColor: '#00c2ff', color: '#00c2ff', borderWidth: '1px', borderRadius: '8px' , padding: '8px 16px' , fontSize: '14px', cursor: 'pointer' , marginRight: '26px' , transition: 'all 0.3s ease' ,}}
+                >
+                  Share
+                </button>
+              
+          
+          </div>
+      
+   
         {/* Added max-w-7xl and wider padding */}
         <div className="max-w-7xl mx-auto px-8 sm:px-12 py-6">
           {/* Navigation */}
@@ -299,6 +320,8 @@ export default function App() {
               </button>
             </div>
           )}
+
+          
 
           {/* Token Grid - adjusted gap */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
