@@ -252,20 +252,13 @@ export default function App() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
             </div>
-            
-             
-              
-                <span style={{ color: '#00c2ff', fontSize: '20px', marginLeft: '90px' }}>
-                  Counter: {counterValue} • Next: {nextMilestone}
-                </span>
+
                 <button
                   onClick={handleShare}
                   style={{ backgroundColor:'#000000', borderColor: '#00c2ff', color: '#00c2ff', borderWidth: '1px', borderRadius: '8px' , padding: '8px 16px' , fontSize: '14px', cursor: 'pointer' , marginRight: '26px' , transition: 'all 0.3s ease' ,}}
                 >
                   Share
                 </button>
-              
-          
           </div>
       
    
@@ -321,7 +314,23 @@ export default function App() {
             </div>
           )}
 
-          
+          <span style={{ color: '#00c2ff', fontSize: '20px', alignItems: 'center', marginBottom: '16px', display: 'block',justifyContent: 'center', textAlign: 'center', fontWeight: '600' }}>
+                  Counter: {counterValue} • Next: {nextMilestone}
+          </span>
+
+          {/* Milestone NFT Section */}
+        {isConnected && (
+          <div className="mb-6">
+            <ResearcherNFT
+              counterValue={counterValue}
+              nextMilestone={nextMilestone}
+              isAtMilestone={isAtMilestone}
+              hasNFT={hasNFT}
+              onMintNFT={handleMintNFT}
+              isLoading={isPending || isConfirming}
+            />
+          </div>
+        )}
 
           {/* Token Grid - adjusted gap */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
