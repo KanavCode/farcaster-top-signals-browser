@@ -60,163 +60,175 @@ export const TokenDetailView: React.FC<TokenDetailViewProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-cyan-900 text-white p-4">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <button
-          onClick={onBack}
-          className="p-2 rounded-lg bg-slate-800/50 hover:bg-slate-700/50 transition-colors"
-        >
-          ← Back
-        </button>
-        <button
-          onClick={() => onWatchlistToggle(token.symbol)}
-          className={`p-2 rounded-lg transition-colors ${
-            isInWatchlist 
-              ? 'bg-yellow-500/20 text-yellow-400 hover:bg-yellow-500/30' 
-              : 'bg-slate-700/50 text-slate-400 hover:bg-slate-600/50'
-          }`}
-        >
-          {isInWatchlist ? '★ Watchlist' : '☆ Add to Watchlist'}
-        </button>
+    <div className="min-h-screen bg-black text-white overflow-hidden">
+      <div className="fixed inset-0">
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute inset-0" 
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 30 L15 0 L45 0 L60 30 L45 60 L15 60 Z' fill='none' stroke='%2300c2ff' stroke-width='1' /%3E%3C/svg%3E")`,
+              backgroundSize: '60px 60px'
+            }}
+          />
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-black" />
       </div>
 
-      {/* Token Header */}
-      <div className="bg-slate-800/80 rounded-xl p-6 mb-6 border border-slate-700/50">
-        <div className="flex items-center gap-4 mb-4">
-          <div className="w-16 h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-xl flex items-center justify-center font-bold text-white text-2xl">
-            {token.symbol}
-          </div>
-          <div>
-            <h1 className="text-3xl font-bold text-white">{token.symbol}</h1>
-            <span className={`text-sm px-3 py-1 rounded-full ${
-              token.type === 'memecoin' ? 'bg-purple-500/20 text-purple-300' : 'bg-blue-500/20 text-blue-300'
-            }`}>
-              {token.type}
+      {/* Animated Border Lines */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute top-0 left-0 w-[20vw] h-[1px] bg-gradient-to-r from-transparent via-[#00c2ff] to-transparent" />
+        <div className="absolute top-0 right-0 w-[1px] h-[20vh] bg-gradient-to-b from-transparent via-[#00c2ff] to-transparent" />
+        <div className="absolute bottom-0 right-0 w-[20vw] h-[1px] bg-gradient-to-l from-transparent via-[#00c2ff] to-transparent" />
+        <div className="absolute bottom-0 left-0 w-[1px] h-[20vh] bg-gradient-to-t from-transparent via-[#00c2ff] to-transparent" />
+      </div>
+
+      {/* Content container - keep existing content */}
+      <div className="relative z-10 max-w-7xl mx-auto px-8 py-6">
+        {/* Enhanced Header with Animation */}
+        <div className="flex items-center justify-between mb-8 animate-fade-in">
+          <button
+            onClick={onBack}
+            className="group px-4 py-2 rounded-lg bg-[#121218] border border-[#2a2a32] hover:border-[#00c2ff] transition-all duration-300"
+          >
+            <span className="inline-flex items-center">
+              <span className="transform group-hover:-translate-x-1 transition-transform duration-300">←</span>
+              <span className="ml-2">Back</span>
             </span>
+          </button>
+          <button
+            onClick={() => onWatchlistToggle(token.symbol)}
+            className={`px-4 py-2 rounded-lg transition-all duration-300 ${
+              isInWatchlist 
+                ? 'bg-[#00c2ff]/20 border border-[#00c2ff] text-[#00c2ff] animate-pulse-slow' 
+                : 'bg-[#121218] border border-[#2a2a32] hover:border-[#00c2ff]'
+            }`}
+          >
+            <span className="inline-flex items-center">
+              <span className={`mr-2 ${isInWatchlist ? 'animate-spin-slow' : ''}`}>
+                {isInWatchlist ? '★' : '☆'}
+              </span>
+              {isInWatchlist ? 'Watching' : 'Watch'}
+            </span>
+          </button>
+        </div>
+
+        {/* Enhanced Token Header with Hover Effects */}
+        <div className="group bg-[#121218]/90 backdrop-blur-md rounded-xl p-8 mb-6 border border-[#2a2a32] transition-all duration-300 hover:border-[#00c2ff]/50 animate-fade-in-up">
+          <div className="flex items-center gap-6 mb-6">
+            <div className="relative">
+              <div className="absolute -inset-1 bg-gradient-to-r from-[#22c55e] to-[#8b5cf6] rounded-xl blur-md opacity-0 group-hover:opacity-75 transition-opacity duration-300" />
+              <div className="relative w-20 h-20 bg-gradient-to-br from-[#22c55e]/20 to-[#8b5cf6]/20 rounded-xl border border-[#2a2a32] flex items-center justify-center font-bold text-3xl transform group-hover:scale-105 transition-transform duration-300">
+                {token.symbol.substring(0, 2)}
+              </div>
+            </div>
+            <div>
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-[#22c55e] via-[#8b5cf6] to-[#00c2ff] bg-clip-text text-transparent bg-300% animate-gradient-scroll">
+                {token.symbol}
+              </h1>
+              <span className={`text-sm px-4 py-1 rounded-full mt-2 inline-block transition-all duration-300
+                ${token.type === 'memecoin' 
+                  ? 'bg-[#8b5cf6]/20 text-[#8b5cf6] border border-[#8b5cf6]/50 hover:bg-[#8b5cf6]/30' 
+                  : 'bg-[#22c55e]/20 text-[#22c55e] border border-[#22c55e]/50 hover:bg-[#22c55e]/30'
+                }`}>
+                {token.type}
+              </span>
+            </div>
+          </div>
+          <p className="text-[#a0a0a0] text-lg transform group-hover:translate-x-2 transition-transform duration-300">
+            {token.description}
+          </p>
+        </div>
+
+        {/* Enhanced Main Signal with Pulse Effect */}
+        <div className="relative group bg-[#121218]/90 backdrop-blur-md rounded-xl p-8 mb-6 border border-[#2a2a32] animate-fade-in-up delay-100">
+          <div className="absolute -inset-0.5 bg-gradient-to-r from-[#22c55e] to-[#00c2ff] rounded-xl opacity-0 group-hover:opacity-60 blur transition-opacity duration-300" />
+          <div className="relative bg-[#121218] rounded-xl p-8">
+            <div className="text-center">
+              <div className={`text-6xl font-bold mb-3 ${getSignalColor(token.hx_mom6)} transform group-hover:scale-105 transition-transform duration-300`}>
+                {token.hx_mom6 > 0 ? '+' : ''}{token.hx_mom6.toFixed(2)}%
+              </div>
+              <div className="text-[#a0a0a0] text-xl">
+                6H MOMENTUM · <span className="animate-pulse">{getSignalStrength(token.hx_mom6)}</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        <p className="text-slate-300 text-lg">{token.description}</p>
+        {/* Signal Metrics Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          {[
+            { label: 'Social Volume', value: token.hx_buzz6, desc: 'Social volume change' },
+            { label: 'Market Volume', value: token.hx_liq6, desc: 'Market volume change' },
+            { label: 'AltRank Change', value: token.hx_rankimp6, desc: 'AltRank change (negated)' },
+            { label: 'Sentiment Change', value: token.hx_sent6, desc: 'Sentiment change' }
+          ].map(metric => (
+            <div 
+              key={metric.label}
+              className="relative group bg-[#121218]/90 backdrop-blur-md rounded-xl p-6 border border-[#2a2a32] transition-all duration-300 hover:border-[#00c2ff]/30"
+            >
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-[#00c2ff]/20 to-[#8b5cf6]/20 rounded-xl opacity-0 group-hover:opacity-50 blur-sm transition-opacity duration-300" />
+              <div className="relative">
+                <h3 className="text-[#a0a0a0] text-sm mb-2">{metric.label}</h3>
+                <div className={`text-2xl font-bold mb-1 ${getSignalColor(metric.value)}`}>
+                  {isNumber(metric.value) ? `${metric.value > 0 ? '+' : ''}${metric.value.toFixed(1)}%` : '-'}
+                </div>
+                <div className="text-xs text-[#a0a0a0]">{metric.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Social Metrics */}
+        <div className="bg-[#121218]/90 backdrop-blur-md rounded-xl p-8 mb-6 border border-[#2a2a32]">
+          <h2 className="text-xl font-bold mb-6 bg-gradient-to-r from-[#22c55e] to-[#8b5cf6] bg-clip-text text-transparent">
+            Social Metrics
+          </h2>
+          <div className="space-y-4">
+            <div>
+              <div className="text-[#a0a0a0]">Active Contributors</div>
+              <div className="text-2xl font-bold">
+                {isNumber(token.contributors_active) 
+                  ? `${token.contributors_active > 0 ? '+' : ''}${token.contributors_active.toFixed(1)}%` 
+                  : '-'
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Social Links */}
+        {token.social_links && (
+          <div className="bg-[#121218]/90 backdrop-blur-md rounded-xl p-8 border border-[#2a2a32]">
+            <h2 className="text-xl font-bold mb-6 bg-gradient-to-r from-[#22c55e] to-[#8b5cf6] bg-clip-text text-transparent">
+              Social Links
+            </h2>
+            <div className="flex flex-wrap gap-3">
+              {Object.entries(token.social_links).map(([platform, url]) => (
+                url && (
+                  <a
+                    key={platform}
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-4 py-2 bg-[#121218] border border-[#2a2a32] hover:border-[#00c2ff] rounded-lg text-white transition-all duration-300"
+                  >
+                    {platform.charAt(0).toUpperCase() + platform.slice(1)}
+                  </a>
+                )
+              ))}
+              {token.website && (
+                <a
+                  href={token.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 bg-[#121218] border border-[#2a2a32] hover:border-[#00c2ff] rounded-lg text-white transition-all duration-300"
+                >
+                  Website
+                </a>
+              )}
+            </div>
+          </div>
+        )}
       </div>
-
-      {/* Main Signal */}
-      <div className="bg-slate-800/80 rounded-xl p-6 mb-6 border border-slate-700/50">
-        <h2 className="text-xl font-bold text-white mb-4">6h Momentum Signal</h2>
-        <div className="text-center">
-          <div className={`text-5xl font-bold ${getSignalColor(token.hx_mom6)} mb-2`}>
-            {token.hx_mom6 > 0 ? '+' : ''}{token.hx_mom6.toFixed(2)}%
-          </div>
-          <div className="text-slate-400">
-            {getSignalStrength(token.hx_mom6)} Signal
-          </div>
-        </div>
-      </div>
-
-      {/* Signal Drivers Grid - Only available metrics */}
-      <div className="grid grid-cols-2 gap-4 mb-6">
-        <div className={`p-4 rounded-xl ${getSignalBgColor(token.hx_buzz6)}`}>
-          <h3 className="text-sm font-semibold text-slate-400 mb-2">Social Volume</h3>
-          <div className={`text-2xl font-bold ${getSignalColor(token.hx_buzz6)}`}>
-            {isNumber(token.hx_buzz6) ? `${token.hx_buzz6 > 0 ? '+' : ''}${token.hx_buzz6.toFixed(1)}%` : '-'}
-          </div>
-          <div className="text-xs text-slate-400 mt-1">
-            Social volume change
-          </div>
-        </div>
-
-        <div className={`p-4 rounded-xl ${getSignalBgColor(token.hx_liq6)}`}>
-          <h3 className="text-sm font-semibold text-slate-400 mb-2">Market Volume</h3>
-          <div className={`text-2xl font-bold ${getSignalColor(token.hx_liq6)}`}>
-            {isNumber(token.hx_liq6) ? `${token.hx_liq6 > 0 ? '+' : ''}${token.hx_liq6.toFixed(1)}%` : '-'}
-          </div>
-          <div className="text-xs text-slate-400 mt-1">
-            Market volume change
-          </div>
-        </div>
-
-        <div className={`p-4 rounded-xl ${getSignalBgColor(token.hx_rankimp6)}`}>
-          <h3 className="text-sm font-semibold text-slate-400 mb-2">AltRank Change</h3>
-          <div className={`text-2xl font-bold ${getSignalColor(token.hx_rankimp6)}`}>
-            {isNumber(token.hx_rankimp6) ? `${token.hx_rankimp6 > 0 ? '+' : ''}${token.hx_rankimp6.toFixed(1)}` : '-'}
-          </div>
-          <div className="text-xs text-slate-400 mt-1">
-            AltRank change (negated)
-          </div>
-        </div>
-
-        <div className={`p-4 rounded-xl ${getSignalBgColor(token.hx_sent6)}`}>
-          <h3 className="text-sm font-semibold text-slate-400 mb-2">Sentiment Change</h3>
-          <div className={`text-2xl font-bold ${getSignalColor(token.hx_sent6)}`}>
-            {isNumber(token.hx_sent6) ? `${token.hx_sent6 > 0 ? '+' : ''}${token.hx_sent6.toFixed(1)}%` : '-'}
-          </div>
-          <div className="text-xs text-slate-400 mt-1">
-            Sentiment change
-          </div>
-        </div>
-      </div>
-
-      {/* Market Data - Not available from database */}
-
-      {/* Social Metrics */}
-      <div className="bg-slate-800/80 rounded-xl p-6 mb-6 border border-slate-700/50">
-        <h2 className="text-xl font-bold text-white mb-4">Social Metrics</h2>
-        <div className="grid grid-cols-1 gap-4">
-          <div>
-            <div className="text-sm text-slate-400">Contributors Change</div>
-            <div className="text-xl font-bold text-white">{isNumber(token.contributors_active) ? `${token.contributors_active > 0 ? '+' : ''}${token.contributors_active.toFixed(1)}%` : '-'}</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Social Links */}
-      {token.social_links && (
-        <div className="bg-slate-800/80 rounded-xl p-6 border border-slate-700/50">
-          <h2 className="text-xl font-bold text-white mb-4">Social Links</h2>
-          <div className="flex gap-3">
-            {token.social_links.twitter && (
-              <a
-                href={token.social_links.twitter}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-semibold transition-colors"
-              >
-                Twitter
-              </a>
-            )}
-            {token.social_links.telegram && (
-              <a
-                href={token.social_links.telegram}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded-lg text-white font-semibold transition-colors"
-              >
-                Telegram
-              </a>
-            )}
-            {token.social_links.discord && (
-              <a
-                href={token.social_links.discord}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg text-white font-semibold transition-colors"
-              >
-                Discord
-              </a>
-            )}
-            {token.website && (
-              <a
-                href={token.website}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-4 py-2 bg-slate-600 hover:bg-slate-700 rounded-lg text-white font-semibold transition-colors"
-              >
-                Website
-              </a>
-            )}
-          </div>
-        </div>
-      )}
     </div>
   );
 };
